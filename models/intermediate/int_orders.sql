@@ -34,6 +34,11 @@ select
         order by orders.order_id
     ) as customer_sales_seq,
 
+    sum(payments.total_amount_paid) over (
+        partition by customer_id
+        order by orders.order_id
+    ) as customer_lifetime_value,
+
     payments.payment_finalized_date,
     payments.total_amount_paid
 

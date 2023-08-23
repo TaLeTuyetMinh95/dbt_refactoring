@@ -14,19 +14,6 @@ customers as (
 
 ),
 
-lifetime_value as (
-
-    select
-
-        o1.order_id,
-        sum(o2.total_amount_paid) as clv_bad
-
-    from orders o1
-    left join orders o2 on o1.customer_id = o2.customer_id and o1.order_id >= o2.order_id
-    group by 1
-
-), 
-
 customer_orders as (
     select 
 
@@ -45,11 +32,10 @@ customer_orders as (
             when orders.customer_first_order_date = orders.order_placed_at
             then 'new'
         else 'return' end as nvsr,
-        lifetime_value.clv_bad as customer_lifetime_value
+        orders.customer_lifetime_value
 
     from orders
     left join customers on orders.customer_id = customers.customer_id 
-    left join lifetime_value on orders.order_id = lifetime_value.order_id
 )
 
 select
